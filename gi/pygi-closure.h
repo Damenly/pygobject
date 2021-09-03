@@ -35,6 +35,9 @@ typedef struct _PyGICClosure
     PyObject *function;
 
     ffi_closure *closure;
+
+    void *func;
+
     ffi_cif cif;
 
     GIScopeType scope;
