@@ -23,6 +23,7 @@
 #include "pygi-invoke.h"
 #include "pygi-ccallback.h"
 #include "pygi-info.h"
+#include "girffi_alter.h"
 
 extern PyObject *_PyGIDefaultArgPlaceholder;
 
@@ -633,7 +634,7 @@ void _pygi_invoke_closure_free (gpointer data)
     PyGICClosure* invoke_closure = (PyGICClosure *) data;
 
     g_callable_info_free_closure (invoke_closure->info,
-                                  invoke_closure->closure);
+                                  invoke_closure->func);
 
     if (invoke_closure->info)
         g_base_info_unref ( (GIBaseInfo*) invoke_closure->info);
@@ -671,9 +672,12 @@ _pygi_make_native_closure (GICallableInfo* info,
     Py_XINCREF (closure->user_data);
 
     fficlosure =
-        g_callable_info_prepare_closure (info, &closure->cif, _pygi_closure_handle,
-                                         closure);
-    closure->closure = fficlosure;
+        g_callable_info_prepare_closure_v2 (info, &closure->cif, _pygi_closure_handle,
+                                         closure, &closure->func);
+
+    /* temp fix */
+    closure->closure = closure->func;
+    closure->func = fficlosure;
 
     /* Give the closure the information it needs to determine when
        to free itself later */
