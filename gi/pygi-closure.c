@@ -23,6 +23,7 @@
 #include "pygi-invoke.h"
 #include "pygi-ccallback.h"
 #include "pygi-info.h"
+#include "girffi_alter.h"
 
 extern PyObject *_PyGIDefaultArgPlaceholder;
 
@@ -671,8 +672,8 @@ _pygi_make_native_closure (GICallableInfo* info,
     Py_XINCREF (closure->user_data);
 
     fficlosure =
-        g_callable_info_prepare_closure (info, &closure->cif, _pygi_closure_handle,
-                                         closure);
+        g_callable_info_prepare_closure_v2 (info, &closure->cif, _pygi_closure_handle,
+                                         closure, NULL);
     closure->closure = fficlosure;
 
     /* Give the closure the information it needs to determine when
