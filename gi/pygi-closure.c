@@ -673,7 +673,7 @@ _pygi_make_native_closure (GICallableInfo* info,
 
     fficlosure =
         g_callable_info_prepare_closure_v2 (info, &closure->cif, _pygi_closure_handle,
-                                         closure, NULL);
+                                         closure, &closure->func);
     closure->closure = fficlosure;
 
     /* Give the closure the information it needs to determine when
