@@ -633,7 +633,7 @@ void _pygi_invoke_closure_free (gpointer data)
     PyGICClosure* invoke_closure = (PyGICClosure *) data;
 
     g_callable_info_free_closure (invoke_closure->info,
-                                  invoke_closure->closure);
+                                  invoke_closure->func);
 
     if (invoke_closure->info)
         g_base_info_unref ( (GIBaseInfo*) invoke_closure->info);
@@ -673,7 +673,8 @@ _pygi_make_native_closure (GICallableInfo* info,
     fficlosure =
         g_callable_info_prepare_closure_v2 (info, &closure->cif, _pygi_closure_handle,
                                          closure, &closure->func);
-    closure->closure = fficlosure;
+    closure->closure = closure->func;
+    closure->func = fficlosure;
 
     /* Give the closure the information it needs to determine when
        to free itself later */
@@ -751,7 +752,7 @@ _pygi_marshal_from_py_interface_callback (PyGIInvokeState   *state,
     closure = _pygi_make_native_closure (
         callable_info, callback_cache->closure_cache, callback_cache->scope,
         py_arg, py_user_data);
-    arg->v_pointer = closure->func;
+    arg->v_pointer = closure->closure;
 
     /* always decref the user data as _pygi_make_native_closure adds its own ref */
     Py_XDECREF (py_user_data);
